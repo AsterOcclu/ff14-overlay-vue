@@ -17,6 +17,7 @@ const routeTitles = new Map(
     "dsrp6": "绝龙诗P6",
     "obs": "obs自动录制",
     "zoneMacro": "副本宏",
+    "dialog": "游戏聊天窗",
     "fflogsUploaderDownload": "今天FFLogsUploader更新了吗？",
     "jobs-dnc": "舞者增强",
     "okASTCard": "一键发卡",

@@ -60,6 +60,11 @@ const menu: Menu[] = [
     type: "网页",
     path: "time?OVERLAY_WS=ws://127.0.0.1:10501/ws",
   },
+  {
+    title: "游戏聊天窗（国际服=满天飞）",
+    type: "悬浮窗",
+    path: "dialog",
+  },
 ];
 function handleClickMenu(menu: Menu) {
   if (menu.type === "悬浮窗") {
