@@ -6,13 +6,11 @@ on:
     branches:
       - main
     paths-ignore:
-      - ".github/**"
       - "*.md"
   pull_request:
     branches:
       - main
     paths-ignore:
-      - ".github/**"
       - "*.md"
     types:
       - closed
@@ -28,14 +26,14 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: recursive
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version: "18.16"
 
       - name: Install Dependencies
         run: |

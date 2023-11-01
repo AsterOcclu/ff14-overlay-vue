@@ -20,20 +20,12 @@ export const useMacroStore = defineStore("macro", {
       selectZone: useStorage("my-zone", ref("1003")),
       zoneNow: useStorage("my-zone-now", ref("129")),
       fastEntrance: [
-        // { text: "幻魔神", value: "1090" },
         { text: "幻鬼", value: "1157" },
-        // { text: "P5S", value: "1082" },
-        // { text: "P6S", value: "1084" },
-        // { text: "P7S", value: "1086" },
-        // { text: "P8S", value: "1088" },
-        // { text: "水道", value: "1076" },
-        // { text: "极火", value: "1096" },
+        { text: "极泽", value: "1169" },
         { text: "P9S", value: "1148" },
         { text: "P10S", value: "1150" },
         { text: "P11S", value: "1152" },
         { text: "P12S", value: "1154" },
-        { text: "极高", value: "1141" },
-        { text: "绝欧", value: "1122" },
       ],
       // gameExists: useStorage("my-game-exists", false),
       show,
@@ -53,6 +45,7 @@ export const useMacroStore = defineStore("macro", {
     submitMacroMacro(macro: MacroInfoMacro): void {
       Reflect.deleteProperty(macro, "Editable");
       macro.Text = cleanMacro(macro.Text);
+      macro.Deletability = true; // 用户修改过，所以不归于默认数据中
     },
     editMacroPlace(macro: MacroInfoPlace): void {
       this.data.zoneId[this.selectZone].map((v) => Reflect.deleteProperty(v, "Editable"));
@@ -60,6 +53,7 @@ export const useMacroStore = defineStore("macro", {
     },
     submitMacroPlace(macro: MacroInfoPlace): void {
       Reflect.deleteProperty(macro, "Editable");
+      macro.Deletability = true; // 用户修改过，所以不归于默认数据中
     },
     formatAllWaymarkPlaceData() {
       for (const x in this.data.zoneId) this.formatSelectZoneWaymarkPlaceData(x);
@@ -352,8 +346,16 @@ export const useMacroStore = defineStore("macro", {
       try {
         const before = JSON.stringify(this.data.zoneId);
         for (const key in this.data.zoneId) {
-          const userData = JSON.parse(JSON.stringify(this.data.zoneId[key]));
           const defaultData = defaultMacro.zoneId[key];
+          const userData = (JSON.parse(JSON.stringify(this.data.zoneId[key])) as (MacroInfoMacro | MacroInfoPlace)[]).filter((v) => {
+            return (
+              !v.Deletability ||
+              (v.Deletability &&
+                defaultData.find(
+                  (d) => (d.Type === "macro" && v.Type === "macro" && d.Text === v.Text) || (d.Type === "place" && v.Type === "place" && d.Place === v.Place),
+                ))
+            );
+          });
           const resultData: (MacroInfoMacro | MacroInfoPlace)[] = [];
           [...defaultData, ...userData].map((v) => {
             if (v.Type === "macro") {
@@ -401,7 +403,9 @@ export const useMacroStore = defineStore("macro", {
           // 记录成功更新时间
           lastUpdate.value = Date.now();
         }
-      } catch {}
+      } catch (e) {
+        console.error(e);
+      }
     },
   },
 });
